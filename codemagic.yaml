@@ -1,0 +1,52 @@
+workflow:
+  name: President Simulator iOS
+  max_build_duration: 120
+
+environment:
+  xcode: latest
+  cocoapods: default
+
+trigger:
+  push:
+    branch:
+      - main
+      - master
+
+scripts:
+  - name: Install dependencies
+    script: |
+      if [ -f Gemfile ]; then bundle install; fi
+      if [ -f Cartfile ]; then carthage bootstrap --platform iOS; fi
+  - name: Set Xcode version (optional)
+    script: |
+      sudo xcode-select -switch /Applications/Xcode_15.app
+  - name: Increment build number
+    script: |
+      cd "President Simulator"
+      AGPTOOL=$(find . -name "agvtool" 2>/dev/null | head -1) || true
+      /usr/libexec/PlistBuddy -c "Set :CFBundleVersion $(date +%s)" "President Simulator/Info.plist" || true
+  - name: Build for testing (simulator)
+    script: |
+      cd "President Simulator"
+      xcodebuild -scheme PresidentSimulator -sdk iphonesimulator -configuration Debug build-for-testing
+  - name: Run unit tests
+    script: |
+      cd "President Simulator"
+      xcodebuild -scheme PresidentSimulator -sdk iphonesimulator -configuration Debug test-without-building
+  - name: Build archive (Release)
+    script: |
+      cd "President Simulator"
+      xcodebuild -scheme PresidentSimulator -sdk iphoneos -configuration Release archive -archivePath PresidentSimulator.xcarchive
+  - name: Export IPA
+    script: |
+      cd "President Simulator"
+      xcodebuild -exportArchive -archivePath PresidentSimulator.xcarchive -exportOptionsPlist ExportOptions.plist -exportPath ./export
+
+artifacts:
+  - President Simulator/export/**/*.ipa
+  - President Simulator/PresidentSimulator.xcarchive/**/*.xcarchive
+
+publishing:
+  email:
+    recipients:
+      - your-email@example.com

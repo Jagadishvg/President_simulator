@@ -1,0 +1,47 @@
+# Xcode
+*.xcodeproj/*
+!*.xcodeproj/project.pbxproj
+!*.xcodeproj/xcshareddata/**
+!*.xcodeproj/project.xcworkspace/**
+*.xcworkspace/
+*.xcuserstate
+*.pbxuser
+*.mode1v3
+*.mode2v3
+*.perspectivev3
+
+# Build outputs
+build/
+DerivedData/
+*.ipa
+*.dSYM.zip
+*.dSYM
+
+# Swift Package Manager
+.build/
+Packages/
+.checkouts/
+
+# CocoaPods
+Pods/
+Podfile.lock
+
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# Icon
+Icon?
+._*
+
+# Temporary
+*.swiftpm/
+*.xcodeproj/xcuserdata/
+
+# Local saves (do not commit user save games)
+*.json
+
+# Environment / secrets
+.env
+*.env
